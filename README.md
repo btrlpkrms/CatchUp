@@ -1,0 +1,2 @@
+# CatchUp
+The goal of CatchUp game, which we designed with the help of WebGL2 and Three.JS in Computer Graphics course, is to help our robot catch the tomato for revenge. In the meantime, he will either escape from the obstacles before him or he will try to overcome the correct obstacle. There are 1 main and 2 auxiliary characters that you can control in the game. Difficulty adjustment, shading type and camera angle can be adjusted. There are nearly 40 control mechanisms supported by sound effects and animations.
