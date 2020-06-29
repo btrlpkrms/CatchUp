@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+		<title>My first three.js app</title>
+		<link type="text/css" rel="stylesheet" href="main.css">
+	</head>
+	<body>
+                <audio loop id="music" preload="auto" style="display: none">
+                    <source src="http://localhost:8383/PacMan/sounds/376737_Skullbeatz___Bad_Cat_Maste.ogg" type="audio/ogg">
+                    <source src="http://localhost:8383/PacMan/sounds/376737_Skullbeatz___Bad_Cat_Maste.mp3" type="audio/mpeg">
+                </audio>
+            
+           
+            
+                <div id="overlay">
+		<div>
+			<button id="startButton">Click to Play</button>
+			<p>In order to play our gorgeous game click</p>
+                </div>
+                </div>
+                <div id="container"></div>
+            
+		<script src="http://localhost:8383/PacMan/js/three.js"></script>
+                <script src="http://localhost:8383/PacMan/js/OBJLoader.js"></script>
+                <!--<script src="http://localhost:8383/PacMan/js/app.js" ></script>-->
+                
+                <script src="http://localhost:8383/PacMan/js/Water2.js"></script> 
+                <script src="http://localhost:8383/PacMan/js/PositionalAudioHelper.js"></script> 
+                <script src="http://localhost:8383/PacMan/js/shaders.js"></script>  
+                <script src="http://localhost:8383/PacMan/js/MTLLoader.js"></script>  
+                <script src="http://localhost:8383/PacMan/js/DDSLoader.js"></script> 
+                <script src="http://localhost:8383/PacMan/js/PLYLoader.js"></script>  
+                <script src="http://localhost:8383/PacMan/js/MeshSurfaceSampler.js"></script> 
+                <script src="http://localhost:8383/PacMan/js/GLTFLoader.js"></script> 
+                <script src="http://localhost:8383/PacMan/utils/SkeletonUtils.js"></script> 
+                <script src="http://localhost:8383/PacMan/js/Reflector.js"></script>
+                <script src="http://localhost:8383/PacMan/js/dat.gui.module.js"></script>
+                <script src="http://localhost:8383/PacMan/js/OrbitControls.js"></script>
+                <script src="http://localhost:8383/PacMan/js/Refractor.js"></script>
+                <script src="http://localhost:8383/PacMan/js/su.js"></script> 
+                
+                <script type="x-shader/x-vertex" id="vertexShader">
+
+		#include <common>
+
+		uniform float speed;
+		uniform float time;
+		uniform float timeOffset;
+		varying vec2 vUv;
+		varying float vAlpha;
+
+		void main() {
+
+			vec3 pos = position;
+
+			float l = ( time * speed * 0.01 ) + timeOffset;
+			float f = fract( l ); // linear time factor [0,1)
+			float a = f * f; // quadratic time factor [0,1)
+
+			// slightly animate the vertices of light shaft if necessary
+
+			// pos.x += cos( l * 20.0 ) * sin( l * 10.0 );
+
+			vAlpha = saturate( 0.7 + min( 1.0, a * 10.0 ) * ( sin( a * 40.0 ) * 0.25 ) );
+
+		  vUv = uv;
+
+			gl_Position = projectionMatrix * modelViewMatrix * vec4( pos, 1.0 );
+
+		}
+
+		</script>
+
+		<script type="x-shader/x-fragment" id="fragmentShader">
+
+		uniform float attenuation;
+		uniform vec3 color;
+		uniform sampler2D colorTexture;
+
+		varying vec2 vUv;
+		varying float vAlpha;
+
+		void main() {
+
+			vec4 textureColor = texture2D( colorTexture, vUv );
+			gl_FragColor = vec4( textureColor.rgb * color.rgb, textureColor.a * vAlpha );
+			gl_FragColor.a *= pow( gl_FragCoord.z, attenuation );
+
+		}
+
+		</script>
+          
+	</body>
+</html>
